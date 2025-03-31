@@ -16,6 +16,10 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
+    public Cliente salvar(Cliente cliente) {
+        return clienteRepository.save(cliente);
+    }
+
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
     }
