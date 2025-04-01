@@ -13,4 +13,10 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("Erro! Cliente não Encontrado!", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(BarbeiroNotFoundException.class)
+    public ResponseEntity<Object> handleBarbeiroNotFoundException(BarbeiroNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Erro! Barbeiro não Encontrado!", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 }
