@@ -25,4 +25,12 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("Erro! Serviço não Encontrado!", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(AgendamentoNotFoundException.class)
+    public ResponseEntity<Object> handleAgendaNotFoundException(AgendamentoNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Erro! Agendamento não encontrado", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+
 }

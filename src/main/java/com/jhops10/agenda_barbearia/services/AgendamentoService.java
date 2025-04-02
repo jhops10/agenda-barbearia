@@ -1,12 +1,14 @@
 package com.jhops10.agenda_barbearia.services;
 
+import com.jhops10.agenda_barbearia.dto.AgendamentoRequestDTO;
 import com.jhops10.agenda_barbearia.entities.Agendamento;
+import com.jhops10.agenda_barbearia.entities.Barbeiro;
+import com.jhops10.agenda_barbearia.entities.Cliente;
+import com.jhops10.agenda_barbearia.entities.Servico;
 import com.jhops10.agenda_barbearia.exceptions.AgendamentoNotFoundException;
-import com.jhops10.agenda_barbearia.exceptions.BarbeiroNotFoundException;
-import com.jhops10.agenda_barbearia.exceptions.ClienteNotFoundException;
+;
 import com.jhops10.agenda_barbearia.repositories.AgendamentoRepository;
-import com.jhops10.agenda_barbearia.repositories.BarbeiroRepository;
-import com.jhops10.agenda_barbearia.repositories.ClienteRepository;
+import com.jhops10.agenda_barbearia.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +17,27 @@ import java.util.List;
 public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
-    private final BarbeiroRepository barbeiroRepository;
-    private final ClienteRepository clienteRepository;
+    private final BarbeiroService barbeiroService;
+    private final ClienteService clienteService;
+    private final ServicoRepository servicoRepository;
 
-    public AgendamentoService(AgendamentoRepository agendamentoRepository, BarbeiroRepository barbeiroRepository, ClienteRepository clienteRepository) {
+    public AgendamentoService(AgendamentoRepository agendamentoRepository, BarbeiroService barbeiroService, ClienteService clienteService, ServicoRepository servicoRepository) {
         this.agendamentoRepository = agendamentoRepository;
-        this.barbeiroRepository = barbeiroRepository;
-        this.clienteRepository = clienteRepository;
+        this.barbeiroService = barbeiroService;
+        this.clienteService = clienteService;
+        this.servicoRepository = servicoRepository;
     }
 
-    public Agendamento salvar(Agendamento agendamento) {
-        verificarBarbeiro(agendamento.getBarbeiro().getId());
-        verificaCliente(agendamento.getCliente().getId());
+    public Agendamento salvar(AgendamentoRequestDTO requestDTO) {
+        Barbeiro barbeiro = barbeiroService.buscarPorId(requestDTO.getBarbeiroId());
+        Cliente cliente = clienteService.buscarPorId(requestDTO.getClienteId());
+        List<Servico> servicos = servicoRepository.findAllById(requestDTO.getServicosIds());
+
+        if (servicos.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum Serviço encontrado para os IDs fornecidos.");
+        }
+
+        Agendamento agendamento = new Agendamento(null, barbeiro, cliente, servicos, requestDTO.getData());
         return agendamentoRepository.save(agendamento);
     }
 
@@ -52,13 +63,4 @@ public class AgendamentoService {
         agendamentoRepository.deleteById(id);
     }
 
-    private void verificarBarbeiro(Long barbeiroId) {
-        barbeiroRepository.findById(barbeiroId)
-                .orElseThrow(() -> new BarbeiroNotFoundException("Barbeiro não Encontrado."));
-    }
-
-    private void verificaCliente(Long clienteId) {
-        clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new ClienteNotFoundException("Cliente não Encontrado."));
-    }
 }
