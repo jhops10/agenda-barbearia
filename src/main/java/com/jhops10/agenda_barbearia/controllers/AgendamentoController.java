@@ -35,6 +35,16 @@ public class AgendamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(agendamentoService.buscarPorId(id));
     }
 
+    @GetMapping("/agendamentos/barbeiro/{idBarbeiro}")
+    public ResponseEntity<List<Agendamento>> buscarAgendamentoPorIdBarbeiro(@PathVariable("idBarbeiro") Long idBarbeiro) {
+        return ResponseEntity.status(HttpStatus.OK).body(agendamentoService.buscarPorIdBarbeiro(idBarbeiro));
+    }
+
+    @GetMapping("/agendamentos/cliente/{idCliente}")
+    public ResponseEntity<List<Agendamento>> buscarAgendamentoPorIdCliente(@PathVariable("idCliente") Long idCliente) {
+        return ResponseEntity.status(HttpStatus.OK).body(agendamentoService.buscarPorIdCliente(idCliente));
+    }
+
     @DeleteMapping("/agendamentos/{id}")
     public ResponseEntity<Void> deletarAgendamentoPorId(@PathVariable("id") Long id) {
         agendamentoService.deletarPorId(id);
