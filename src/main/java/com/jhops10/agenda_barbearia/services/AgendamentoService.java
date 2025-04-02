@@ -6,11 +6,8 @@ import com.jhops10.agenda_barbearia.entities.Barbeiro;
 import com.jhops10.agenda_barbearia.entities.Cliente;
 import com.jhops10.agenda_barbearia.entities.Servico;
 import com.jhops10.agenda_barbearia.exceptions.AgendamentoNotFoundException;
-import com.jhops10.agenda_barbearia.exceptions.BarbeiroNotFoundException;
-import com.jhops10.agenda_barbearia.exceptions.ClienteNotFoundException;
+;
 import com.jhops10.agenda_barbearia.repositories.AgendamentoRepository;
-import com.jhops10.agenda_barbearia.repositories.BarbeiroRepository;
-import com.jhops10.agenda_barbearia.repositories.ClienteRepository;
 import com.jhops10.agenda_barbearia.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +17,13 @@ import java.util.List;
 public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
-    private final BarbeiroRepository barbeiroRepository;
     private final BarbeiroService barbeiroService;
-    private final ClienteRepository clienteRepository;
     private final ClienteService clienteService;
     private final ServicoRepository servicoRepository;
 
-    public AgendamentoService(AgendamentoRepository agendamentoRepository, BarbeiroRepository barbeiroRepository, BarbeiroService barbeiroService, ClienteRepository clienteRepository, ClienteService clienteService, ServicoRepository servicoRepository) {
+    public AgendamentoService(AgendamentoRepository agendamentoRepository, BarbeiroService barbeiroService, ClienteService clienteService, ServicoRepository servicoRepository) {
         this.agendamentoRepository = agendamentoRepository;
-        this.barbeiroRepository = barbeiroRepository;
         this.barbeiroService = barbeiroService;
-        this.clienteRepository = clienteRepository;
         this.clienteService = clienteService;
         this.servicoRepository = servicoRepository;
     }
