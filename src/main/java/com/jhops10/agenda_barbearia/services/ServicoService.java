@@ -1,8 +1,11 @@
 package com.jhops10.agenda_barbearia.services;
 
+import com.jhops10.agenda_barbearia.entities.Barbeiro;
 import com.jhops10.agenda_barbearia.entities.Servico;
 import com.jhops10.agenda_barbearia.exceptions.ServicoNotFoundException;
+
 import com.jhops10.agenda_barbearia.repositories.ServicoRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +14,11 @@ import java.util.List;
 public class ServicoService {
 
     private final ServicoRepository servicoRepository;
+    private final BarbeiroService barbeiroService;
 
-    public ServicoService(ServicoRepository servicoRepository) {
+    public ServicoService(ServicoRepository servicoRepository, BarbeiroService barbeiroService) {
         this.servicoRepository = servicoRepository;
+        this.barbeiroService = barbeiroService;
     }
 
     public Servico salvar(Servico servico) {
@@ -31,6 +36,7 @@ public class ServicoService {
     public Servico buscarPorId(Long id) {
         return servicoRepository.findById(id)
                 .orElseThrow(() -> new ServicoNotFoundException("Serviço com o id " + id + " não encontrado"));
+
     }
 
     public Servico atualizar(Long id, Servico servicoAtualizado) {
@@ -44,6 +50,14 @@ public class ServicoService {
         servicoRepository.deleteById(id);
     }
 
+    public Servico associarBarbeiro(Long idServico, Long idBarbeiro) {
+        Servico servico = buscarPorId(idServico);
+        Barbeiro barbeiro = barbeiroService.buscarPorId(idBarbeiro);
+
+        servico.getBarbeiros().add(barbeiro);
+        return servicoRepository.save(servico);
+    }
+
     private void atualizarDados(Servico servico, Servico servicoAtualizado) {
 
         if (servicoAtualizado.getServico() != null && !servicoAtualizado.getServico().isEmpty()) {
@@ -53,7 +67,9 @@ public class ServicoService {
         if (servicoAtualizado.getDescricaoServico() != null && !servicoAtualizado.getDescricaoServico().isEmpty()) {
             servico.setDescricaoServico(servicoAtualizado.getDescricaoServico());
         }
+
+        if (servicoAtualizado.getPreco() != null) {
+            servico.setPreco(servicoAtualizado.getPreco());
+        }
     }
-
-
 }
