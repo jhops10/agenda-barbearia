@@ -1,12 +1,14 @@
 package com.jhops10.agenda_barbearia.services;
 
 import com.jhops10.agenda_barbearia.dto.AgendamentoRequestDTO;
+import com.jhops10.agenda_barbearia.dto.AgendamentoResponseDTO;
 import com.jhops10.agenda_barbearia.entities.Agendamento;
 import com.jhops10.agenda_barbearia.entities.Barbeiro;
 import com.jhops10.agenda_barbearia.entities.Cliente;
 import com.jhops10.agenda_barbearia.entities.Servico;
 import com.jhops10.agenda_barbearia.exceptions.AgendamentoNotFoundException;
 ;
+import com.jhops10.agenda_barbearia.exceptions.ServicoNotFoundException;
 import com.jhops10.agenda_barbearia.repositories.AgendamentoRepository;
 import com.jhops10.agenda_barbearia.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
@@ -28,38 +30,49 @@ public class AgendamentoService {
         this.servicoRepository = servicoRepository;
     }
 
-    public Agendamento salvar(AgendamentoRequestDTO requestDTO) {
+    public AgendamentoResponseDTO salvar(AgendamentoRequestDTO requestDTO) {
         Barbeiro barbeiro = barbeiroService.buscarPorId(requestDTO.getBarbeiroId());
         Cliente cliente = clienteService.buscarPorId(requestDTO.getClienteId());
         List<Servico> servicos = servicoRepository.findAllById(requestDTO.getServicosIds());
 
         if (servicos.isEmpty()) {
-            throw new IllegalArgumentException("Nenhum Serviço encontrado para os IDs fornecidos.");
+            throw new ServicoNotFoundException("Nenhum Serviço encontrado para os IDs fornecidos.");
         }
 
         Agendamento agendamento = new Agendamento(null, barbeiro, cliente, servicos, requestDTO.getData());
-        return agendamentoRepository.save(agendamento);
+        Agendamento agendamentoSalvo = agendamentoRepository.save(agendamento);
+
+        return new AgendamentoResponseDTO(agendamentoSalvo);
     }
 
-    public List<Agendamento> listarTodos() {
-        return agendamentoRepository.findAll();
+    public List<AgendamentoResponseDTO> listarTodos() {
+        return agendamentoRepository.findAll().stream()
+                .map(AgendamentoResponseDTO::new)
+                .toList();
     }
 
-    public Agendamento buscarPorId(Long id) {
-        return agendamentoRepository.findById(id)
+    public AgendamentoResponseDTO buscarPorId(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new AgendamentoNotFoundException("Agendamento com id " + id + " não encontrado."));
+
+        return new AgendamentoResponseDTO(agendamento);
     }
 
-    public List<Agendamento> buscarPorIdBarbeiro(Long barbeiroId) {
-        return agendamentoRepository.findByBarbeiroId(barbeiroId);
+    public List<AgendamentoResponseDTO> buscarPorIdBarbeiro(Long barbeiroId) {
+        return agendamentoRepository.findByBarbeiroId(barbeiroId).stream()
+                .map(AgendamentoResponseDTO::new)
+                .toList();
     }
 
-    public List<Agendamento> buscarPorIdCliente(Long clienteId) {
-        return agendamentoRepository.findByClienteId(clienteId);
+    public List<AgendamentoResponseDTO> buscarPorIdCliente(Long clienteId) {
+        return agendamentoRepository.findByClienteId(clienteId).stream()
+                .map(AgendamentoResponseDTO::new)
+                .toList();
     }
 
     public void deletarPorId(Long id) {
-        Agendamento agendamento = buscarPorId(id);
+        Agendamento agendamento = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new AgendamentoNotFoundException("Agendamento com id " + id + " não encontrado."));
         agendamentoRepository.deleteById(id);
     }
 
