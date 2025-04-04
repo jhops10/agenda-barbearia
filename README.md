@@ -35,6 +35,13 @@ A aplicação estará disponível em `http://localhost:8080`
 - **Atualizar:** `PUT /api/barbeiros/{id}`
 - **Deletar:** `DELETE /api/barbeiros/{id}`
 
+### **Clientes**
+- `GET /api/clientes` - Retorna todos os clientes cadastrados.
+- `GET /api/clientes/{id}` - Retorna um cliente pelo ID.
+- `POST /api/clientes` - Cadastra um novo cliente.
+- `PUT /api/clientes/{id}` - Atualiza os dados de um cliente.
+- `DELETE /api/clientes/{id}` - Remove um cliente do sistema.
+
 ### Serviços
 - **Criar um serviço:** `POST /api/servicos`
 - **Listar todos:** `GET /api/servicos`
@@ -49,5 +56,7 @@ A aplicação estará disponível em `http://localhost:8080`
 - **Buscar por barbeiro:** `GET /api/agendamentos/barbeiro/{idBarbeiro}`
 - **Buscar por cliente:** `GET /api/agendamentos/cliente/{idCliente}`
 - **Deletar:** `DELETE /api/agendamentos/{id}`
+
+
 
 
