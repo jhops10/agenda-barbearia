@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/servicos")
 public class ServicoController {
 
     private final ServicoService servicoService;
@@ -19,35 +19,35 @@ public class ServicoController {
     }
 
 
-    @PostMapping("/servicos")
+    @PostMapping
     public ResponseEntity<Servico> cadastrarServico(@RequestBody Servico servico) {
         return ResponseEntity.status(HttpStatus.OK).body(servicoService.salvar(servico));
     }
 
-    @GetMapping("/servicos")
+    @GetMapping
     public ResponseEntity<List<Servico>> buscarTodosServicos() {
         return ResponseEntity.status(HttpStatus.OK).body(servicoService.listarTodos());
     }
 
-    @GetMapping("/servicos/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Servico> buscarServicoPorId(@PathVariable("id") Long id) {
         Servico servico = servicoService.buscarPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(servico);
     }
 
-    @PutMapping("/servicos/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Servico> atualizarServicoPorId(@PathVariable("id") Long id, @RequestBody Servico servicoAtualizado) {
         Servico servico = servicoService.atualizar(id, servicoAtualizado);
         return ResponseEntity.status(HttpStatus.OK).body(servico);
     }
 
-    @DeleteMapping("/servicos/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarServicoPorId(@PathVariable("id") Long id) {
         servicoService.deletar(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/servicos/{idServico}/barbeiro/{idBarbeiro}")
+    @PostMapping("/{idServico}/barbeiro/{idBarbeiro}")
     public ResponseEntity<Servico> associarServicoAoBarbeiro(@PathVariable("idServico") Long idServico, @PathVariable("idBarbeiro") Long idBarbeiro) {
         Servico servicoAtualizado = servicoService.associarBarbeiro(idServico, idBarbeiro);
         return ResponseEntity.status(HttpStatus.OK).body(servicoAtualizado);
